@@ -121,6 +121,14 @@ resource "aws_security_group_rule" "vpn_home" {
 
 
 #mongodb accepting connections from catalogue instances
+resource "aws_security_group_rule" "mongodb_vpn" {
+  source_security_group_id = module.catalogue.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.mongodb.sg_id
+}
 resource "aws_security_group_rule" "mongodb_catalogue" {
   source_security_group_id = module.catalogue.sg_id
   type              = "ingress"
@@ -139,6 +147,15 @@ resource "aws_security_group_rule" "mongodb_user" {
   security_group_id = module.mongodb.sg_id
 }
 
+resource "aws_security_group_rule" "redis_vpn" {
+  source_security_group_id = module.user.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.redis.sg_id
+}
+
 resource "aws_security_group_rule" "redis_user" {
   source_security_group_id = module.user.sg_id
   type              = "ingress"
@@ -155,4 +172,186 @@ resource "aws_security_group_rule" "redis_cart" {
   to_port           = 6379
   protocol          = "tcp"
   security_group_id = module.redis.sg_id
+}
+
+#MYSQL
+resource "aws_security_group_rule" "mysql_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.mysql.sg_id
+}
+resource "aws_security_group_rule" "mysql_shipping" {
+  source_security_group_id = module.shipping.sg_id
+  type              = "ingress"
+  from_port         = 3306
+  to_port           = 3306
+  protocol          = "tcp"
+  security_group_id = module.mysql.sg_id
+}
+
+#rabbit mq
+
+resource "aws_security_group_rule" "rabbitmq_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.rabbitmq.sg_id
+}
+
+resource "aws_security_group_rule" "rabbit_payment" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 5672
+  to_port           = 5672
+  protocol          = "tcp"
+  security_group_id = module.rabbitmq.sg_id
+}
+
+#Catalogue
+
+resource "aws_security_group_rule" "catalogue_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_web" {
+  source_security_group_id = module.web.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_cart" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.catalogue.sg_id
+}
+
+#USer
+resource "aws_security_group_rule" "user_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.user.sg_id
+}
+resource "aws_security_group_rule" "user_web" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.user.sg_id
+}
+resource "aws_security_group_rule" "user_payment" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.user.sg_id
+}
+
+#cart
+resource "aws_security_group_rule" "cart_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.cart.sg_id
+}
+resource "aws_security_group_rule" "cart_shipping" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.cart.sg_id
+}
+resource "aws_security_group_rule" "cart_web" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.cart.sg_id
+}
+resource "aws_security_group_rule" "cart_payment" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.cart.sg_id
+}
+#Shipping
+resource "aws_security_group_rule" "shipping_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.shipping.sg_id
+}
+
+resource "aws_security_group_rule" "shipping_web" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.shipping.sg_id
+}
+#Payment
+resource "aws_security_group_rule" "payment_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.payment.sg_id
+}
+resource "aws_security_group_rule" "payment_web" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.payment.sg_id
+}
+
+#Web
+resource "aws_security_group_rule" "web_vpn" {
+  source_security_group_id = module.vpn.sg_id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = module.web.sg_id
+}
+
+resource "aws_security_group_rule" "web_internet" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.web.sg_id
+  cidr_blocks = ["0.0.0.0/0"]
 }
