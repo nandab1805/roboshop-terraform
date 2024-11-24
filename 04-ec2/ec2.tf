@@ -16,6 +16,10 @@ module "ec2_instance" {
   )
 }
 
+output "mongodb_private_ip" {
+  value = module.ec2_instance.private_ip
+}
+
 module "redis" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
@@ -32,6 +36,10 @@ module "redis" {
       Name = "${local.ec2_name}-redis"
     }
   )
+}
+
+output "redis_private_ip" {
+  value = module.redis.private_ip
 }
 
 module "mysql" {
@@ -52,6 +60,10 @@ module "mysql" {
   )
 }
 
+output "mysql_private_ip" {
+  value = module.mysql.private_ip
+}
+
 module "rabbitmq" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
@@ -68,6 +80,10 @@ module "rabbitmq" {
       Name = "${local.ec2_name}-rabbitmq"
     }
   )
+}
+
+output "rabbitmq_private_ip" {
+  value = module.rabbitmq.private_ip
 }
 
 module "catalogue" {
@@ -88,6 +104,10 @@ module "catalogue" {
   )
 }
 
+output "catalogue_private_ip" {
+  value = module.catalogue.private_ip
+}
+
 module "user" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
@@ -104,6 +124,10 @@ module "user" {
       Name = "${local.ec2_name}-user"
     }
   )
+}
+
+output "user_private_ip" {
+  value = module.user.private_ip
 }
 
 module "cart" {
@@ -124,6 +148,10 @@ module "cart" {
   )
 }
 
+output "cart_private_ip" {
+  value = module.cart.private_ip
+}
+
 module "shipping" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
@@ -140,6 +168,10 @@ module "shipping" {
       Name = "${local.ec2_name}-shipping"
     }
   )
+}
+
+output "shipping_private_ip" {
+  value = module.shipping.private_ip
 }
 
 module "payment" {
@@ -160,6 +192,10 @@ module "payment" {
   )
 }
 
+output "payment_private_ip" {
+  value = module.payment.private_ip
+}
+
 module "web" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
@@ -176,6 +212,10 @@ module "web" {
       Name = "${local.ec2_name}-web"
     }
   )
+}
+
+output "web_private_ip" {
+  value = module.web.private_ip
 }
 
 module "ansible" {
@@ -197,6 +237,10 @@ module "ansible" {
   )
 }
 
+output "ansible_private_ip" {
+  value = module.ansible.private_ip
+}
+
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
   zone_name = var.zone_name
@@ -207,7 +251,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.mongodb.private_ip}",
+        module.ec2_instance.private_ip,
       ]
     },
     {
@@ -215,7 +259,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.redis.private_ip}",
+        module.redis.private_ip,
       ]
     },
     {
@@ -223,7 +267,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.mysql.private_ip}",
+        module.mysql.private_ip,
       ]
     },
     {
@@ -231,7 +275,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.rabbitmq.private_ip}",
+        module.rabbitmq.private_ip,
       ]
     },
     {
@@ -239,7 +283,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.catalogue.private_ip}",
+        module.catalogue.private_ip,
       ]
     },
     {
@@ -247,7 +291,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.user.private_ip}",
+        module.user.private_ip,
       ]
     },
     {
@@ -255,7 +299,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.cart.private_ip}",
+        module.cart.private_ip,
       ]
     },
     {
@@ -263,7 +307,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.shipping.private_ip}",
+        module.shipping.private_ip,
       ]
     },
     {
@@ -271,7 +315,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.payment.private_ip}",
+        module.payment.private_ip,
       ]
     },
     {
@@ -279,7 +323,7 @@ module "records" {
       type    = "A"
       ttl     = 1
       records = [
-        "${module.web.private_ip}",
+        module.web.private_ip,
       ]
     },
   ]
