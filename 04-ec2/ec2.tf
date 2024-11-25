@@ -217,6 +217,9 @@ module "web" {
 output "web_private_ip" {
   value = module.web.private_ip
 }
+output "web_public_ip" {
+  value = module.web.public_ip
+}
 
 module "ansible" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
@@ -324,6 +327,14 @@ module "records" {
       ttl     = 1
       records = [
         module.web.private_ip,
+      ]
+    },
+    {
+      name    = ""
+      type    = "A"
+      ttl     = 1
+      records = [
+        module.web.public_ip,
       ]
     },
   ]
